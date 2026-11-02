@@ -1,0 +1,8 @@
+{
+  "rows": 105996,
+  "columns": 28,
+  "event_date_min": "2015-01-01",
+  "event_date_max": "2025-11-30",
+  "exact_duplicate_rows": 0,
+  "unique_upa": 105996
+}

@@ -1,0 +1,23 @@
+{
+  "status": "completed",
+  "generated_at_utc": "2026-11-02T13:59:12.056823+00:00",
+  "dataset_path": "E:\\Agents & Projects\\unsupervise_Project\\Safety-Incident-Anomaly-Detection\\data\\raw\\January2015toNovember2025.csv",
+  "dataset_rows": 105996,
+  "model_sample_rows": 5000,
+  "random_state": 42,
+  "quick_grid": true,
+  "feature_dimensions": 24,
+  "representation": "structured_text",
+  "experiment_count": 6,
+  "reference_iforest": "iforest_n100_c0.03",
+  "reference_lof": "lof_k15_c0.03_euclidean",
+  "agreement": {
+    "jaccard_anomaly_sets": 0.08695652173913043,
+    "adjusted_rand_index": 0.12683777207473132,
+    "anomalies_a": 150,
+    "anomalies_b": 150,
+    "intersection": 24,
+    "spearman_score_correlation": 0.13435909840493626
+  },
+  "note": "Agreement measures compare two unsupervised partitions; they are not anomaly accuracy metrics."
+}

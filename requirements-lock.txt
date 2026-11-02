@@ -1,0 +1,5 @@
+# Install exact resolved versions for your own environment with:
+# python -m pip freeze > requirements-lock.txt
+# This file intentionally lists compatible ranges rather than pretending to be
+# a cross-platform lock generated from a particular machine.
+-r requirements.txt

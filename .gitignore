@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+.pytest_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data: raw records are not committed to Git
+/data/raw/*
+!/data/raw/.gitkeep
+/data/interim/*
+/data/processed/*
+
+# Local outputs and potentially record-level artifacts
+/artifacts/private/*
+/artifacts/models/*
+/results/private/*
+*.joblib
+*.pkl
+
+# Generated artifacts can be selectively committed after review
+/reports/data_audit/*
+/reports/figures/*
+/reports/tables/*
+!/reports/**/.gitkeep
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

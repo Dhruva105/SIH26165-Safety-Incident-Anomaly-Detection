@@ -1,0 +1,7 @@
+experiment_id,model,n_observations,n_anomalies,anomaly_percent,runtime_seconds,parameters
+iforest_n100_c0.01,Isolation Forest,5000,50,1.0,0.2904,"{'contamination': 0.01, 'n_estimators': 100, 'max_samples': 'auto', 'random_state': 42}"
+iforest_n100_c0.03,Isolation Forest,5000,150,3.0,0.4058,"{'contamination': 0.03, 'n_estimators': 100, 'max_samples': 'auto', 'random_state': 42}"
+iforest_n200_c0.03,Isolation Forest,5000,150,3.0,0.7886,"{'contamination': 0.03, 'n_estimators': 200, 'max_samples': 'auto', 'random_state': 42}"
+lof_k15_c0.01_euclidean,Local Outlier Factor,5000,50,1.0,2.2231,"{'n_neighbors': 15, 'contamination': 0.01, 'metric': 'euclidean', 'novelty': False}"
+lof_k15_c0.03_euclidean,Local Outlier Factor,5000,150,3.0,0.0606,"{'n_neighbors': 15, 'contamination': 0.03, 'metric': 'euclidean', 'novelty': False}"
+lof_k25_c0.03_euclidean,Local Outlier Factor,5000,150,3.0,0.0679,"{'n_neighbors': 25, 'contamination': 0.03, 'metric': 'euclidean', 'novelty': False}"

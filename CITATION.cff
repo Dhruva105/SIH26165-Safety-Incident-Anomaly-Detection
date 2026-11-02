@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the project repository and dataset source."
+title: "Safety-Incident Anomaly Pattern Detection Using Isolation Forest and LOF"
+version: 1.0.0
+authors:
+  - family-names: "Pal"
+    given-names: "Dhruv"
+type: software
+date-released: 2026-11-02

@@ -1,0 +1,29 @@
+column,missing_count,missing_percent
+Address2,96693,91.223
+Inspection,70526,66.536
+Secondary Source Title,55382,52.249
+Secondary Source,55381,52.248
+Longitude,72,0.068
+Latitude,72,0.068
+Zip,24,0.023
+Address1,18,0.017
+City,17,0.016
+Amputation,7,0.007
+Loss of Eye,5,0.005
+Primary NAICS,2,0.002
+SourceTitle,1,0.001
+EventTitle,1,0.001
+NatureTitle,1,0.001
+State,0,0.0
+ID,0,0.0
+UPA,0,0.0
+EventDate,0,0.0
+Employer,0,0.0
+Part of Body,0,0.0
+Nature,0,0.0
+Final Narrative,0,0.0
+Hospitalized,0,0.0
+Source,0,0.0
+Event,0,0.0
+Part of Body Title,0,0.0
+FederalState,0,0.0

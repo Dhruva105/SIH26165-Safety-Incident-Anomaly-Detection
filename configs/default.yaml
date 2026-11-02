@@ -1,0 +1,63 @@
+project:
+  name: "Safety-Incident Anomaly Detection"
+  random_state: 42
+  dataset_path: "data/raw/January2015toNovember2025.csv"
+  output_dir: "artifacts"
+  public_dir: "artifacts/public"
+  private_dir: "artifacts/private"
+
+data:
+  date_column: "EventDate"
+  id_column: "UPA"
+  narrative_column: "Final Narrative"
+  categorical_features:
+    - "Primary NAICS"
+    - "EventTitle"
+    - "SourceTitle"
+    - "Secondary Source Title"
+  supplementary_categorical_features:
+    - "NatureTitle"
+    - "Part of Body Title"
+  excluded_features:
+    - "ID"
+    - "UPA"
+    - "Employer"
+    - "Address1"
+    - "Address2"
+    - "City"
+    - "State"
+    - "Zip"
+    - "Latitude"
+    - "Longitude"
+    - "Inspection"
+    - "Hospitalized"
+    - "Amputation"
+    - "Loss of Eye"
+    - "FederalState"
+
+features:
+  min_category_frequency: 15
+  max_text_features: 2500
+  text_min_df: 3
+  text_max_df: 0.97
+  text_ngram_min: 1
+  text_ngram_max: 2
+  svd_components: 24
+  include_text_by_default: true
+  include_injury_categories: false
+
+experiments:
+  sample_size: 5000
+  benchmark_sample_sizes: [1000, 2500, 5000]
+  random_state: 42
+  isolation_forest:
+    n_estimators: [100, 200]
+    contamination: [0.01, 0.03, 0.05]
+    max_samples: "auto"
+  lof:
+    n_neighbors: [15, 25]
+    contamination: [0.01, 0.03]
+    metric: ["euclidean"]
+  lof_max_rows: 10000
+  pca_components: 3
+  review_size_per_group: 25
