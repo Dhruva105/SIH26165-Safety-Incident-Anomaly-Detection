@@ -181,7 +181,7 @@ Jaccard similarity, Adjusted Rand Index and Spearman score correlation describe 
 
 ## 15. Citation
 
-See `CITATION.cff` and `docs/METHODOLOGY.md`. Verify source and method references before formal academic submission.
+Software citation details are in CITATION.cff; dataset and method references are in docs/METHODOLOGY.md.
 
 ## 16. Limitations
 
