@@ -1,0 +1,13 @@
+configuration,model,outcome_field,outcome_indicator,indicator_status,records,flagged_records,flag_rate_percent
+iforest_n100_c0.03,Isolation Forest,Hospitalized,reported_hospitalization_present,present,4063,143,3.52
+iforest_n100_c0.03,Isolation Forest,Hospitalized,reported_hospitalization_present,absent,937,7,0.747
+iforest_n100_c0.03,Isolation Forest,Amputation,reported_amputation_present,present,1290,11,0.853
+iforest_n100_c0.03,Isolation Forest,Amputation,reported_amputation_present,absent,3709,139,3.748
+iforest_n100_c0.03,Isolation Forest,Loss of Eye,reported_eye_loss_present,present,1,0,0.0
+iforest_n100_c0.03,Isolation Forest,Loss of Eye,reported_eye_loss_present,absent,4999,150,3.001
+lof_k15_c0.03_euclidean,Local Outlier Factor,Hospitalized,reported_hospitalization_present,present,4063,124,3.052
+lof_k15_c0.03_euclidean,Local Outlier Factor,Hospitalized,reported_hospitalization_present,absent,937,26,2.775
+lof_k15_c0.03_euclidean,Local Outlier Factor,Amputation,reported_amputation_present,present,1290,41,3.178
+lof_k15_c0.03_euclidean,Local Outlier Factor,Amputation,reported_amputation_present,absent,3709,109,2.939
+lof_k15_c0.03_euclidean,Local Outlier Factor,Loss of Eye,reported_eye_loss_present,present,1,0,0.0
+lof_k15_c0.03_euclidean,Local Outlier Factor,Loss of Eye,reported_eye_loss_present,absent,4999,150,3.001

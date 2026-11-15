@@ -25,6 +25,8 @@ class FeatureResult:
     svd: TruncatedSVD | None
     encoder: OneHotEncoder
     vectorizer: TfidfVectorizer | None
+    scaler: StandardScaler | None = None
+    categorical_columns: list[str] | None = None
 
 
 def _clean_category(series: pd.Series) -> pd.Series:
@@ -119,11 +121,48 @@ def build_features(
     if max_components < 2:
         dense = combined.toarray().astype(np.float32)
         names = [f"feature_{i}" for i in range(dense.shape[1])]
-        return FeatureResult(dense, np.arange(len(frame)), names, representation, None, encoder, vectorizer)
+        return FeatureResult(dense, np.arange(len(frame)), names, representation, None, encoder, vectorizer, None, categorical)
 
     svd = TruncatedSVD(n_components=max_components, random_state=random_state)
     reduced = svd.fit_transform(combined).astype(np.float32)
     scaler = StandardScaler()
     reduced = scaler.fit_transform(reduced).astype(np.float32)
     names = [f"latent_{i + 1}" for i in range(reduced.shape[1])]
-    return FeatureResult(reduced, np.arange(len(frame)), names, representation, svd, encoder, vectorizer)
+    return FeatureResult(reduced, np.arange(len(frame)), names, representation, svd, encoder, vectorizer, scaler, categorical)
+
+
+def transform_features(frame: pd.DataFrame, fitted: FeatureResult) -> np.ndarray:
+    """Transform new rows using the exact encoders fitted by ``build_features``.
+
+    This is intended for inference workflows. It deliberately does not refit
+    categories, vocabulary, dimensionality reduction, or scaling on new input.
+    """
+    from scipy import sparse
+
+    if fitted.categorical_columns is None:
+        raise ValueError("The fitted feature bundle does not contain categorical columns.")
+    working = frame.copy()
+    for col in fitted.categorical_columns:
+        if col not in working:
+            working[col] = "Unknown"
+    cat_frame = pd.DataFrame(
+        {c: _clean_category(working[c]) for c in fitted.categorical_columns},
+        index=working.index,
+    )
+    cat_matrix = fitted.encoder.transform(cat_frame)
+    date_matrix = make_date_features(working).to_numpy(dtype=np.float32)
+    base_matrix = sparse.hstack(
+        [cat_matrix, sparse.csr_matrix(date_matrix)], format="csr"
+    )
+    if fitted.representation == "structured_text" and fitted.vectorizer is not None:
+        narrative = working.get(TEXT_COLUMN, pd.Series("", index=working.index)).fillna("").astype(str)
+        text_matrix = fitted.vectorizer.transform(narrative)
+        combined = sparse.hstack([base_matrix, text_matrix], format="csr")
+    else:
+        combined = base_matrix
+    if fitted.svd is not None:
+        reduced = fitted.svd.transform(combined).astype(np.float32)
+        if fitted.scaler is not None:
+            reduced = fitted.scaler.transform(reduced).astype(np.float32)
+        return reduced
+    return combined.toarray().astype(np.float32)

@@ -13,7 +13,9 @@ from safety_anomaly.data.audit import audit_frame
 from safety_anomaly.data.clean import prepare_records
 from safety_anomaly.features.build import build_features
 from safety_anomaly.models.experiments import run_experiment_grid
-from safety_anomaly.evaluation.metrics import agreement_metrics
+from safety_anomaly.evaluation.metrics import (
+    agreement_metrics, pairwise_agreement_table, outcome_proxy_table,
+)
 from safety_anomaly.evaluation.review import create_blinded_review_sheet, public_anomaly_export
 from safety_anomaly.visualization.plots import create_pca_projection, save_pca_figure
 
@@ -90,6 +92,14 @@ def run_pipeline(dataset_path: str | Path | None = None, *, config_path: str | P
     metrics = agreement_metrics(if_pred["labels"], lof_pred["labels"], if_pred["scores"], lof_pred["scores"])
     _write_json(public_dir / "agreement_metrics.json", metrics)
 
+    # Compare every evaluated IF/LOF setting, not only the selected reference pair.
+    pairwise = pairwise_agreement_table(predictions)
+    pairwise.to_csv(public_dir / "parameter_agreement.csv", index=False)
+    # OSHA injury outcome fields are held out from feature construction and used
+    # only for descriptive post-hoc association checks. They are not anomaly labels.
+    proxies = outcome_proxy_table(sample, predictions, [if_key, lof_key])
+    proxies.to_csv(public_dir / "outcome_proxy_comparison.csv", index=False)
+
     coords, explained = create_pca_projection(feature_result.X, n_components=3, random_state=seed)
     coords.insert(0, "record_number", np.arange(1, len(coords) + 1))
     coords.to_csv(public_dir / "pca_coordinates.csv", index=False)
@@ -110,7 +120,7 @@ def run_pipeline(dataset_path: str | Path | None = None, *, config_path: str | P
     run_metadata = {
         "status": "completed",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "dataset_path": str(data_path),
+        "dataset_path": (Path("data/raw") / data_path.name).as_posix(),
         "dataset_rows": int(len(raw)),
         "model_sample_rows": int(len(sample)),
         "random_state": seed,
@@ -118,6 +128,7 @@ def run_pipeline(dataset_path: str | Path | None = None, *, config_path: str | P
         "feature_dimensions": int(feature_result.X.shape[1]),
         "representation": rep,
         "experiment_count": int(len(summary)),
+        "pairwise_configuration_comparisons": int(len(pairwise)),
         "reference_iforest": if_key,
         "reference_lof": lof_key,
         "agreement": metrics,

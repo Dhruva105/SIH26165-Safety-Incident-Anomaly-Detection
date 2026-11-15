@@ -1,0 +1,16 @@
+configuration_a,model_a,configuration_b,model_b,jaccard_anomaly_sets,adjusted_rand_index,anomalies_a,anomalies_b,intersection,spearman_score_correlation
+iforest_n100_c0.01,Isolation Forest,iforest_n100_c0.03,Isolation Forest,0.3333333333333333,0.4821310026680874,50,150,50,0.9999999999999999
+iforest_n100_c0.01,Isolation Forest,iforest_n200_c0.03,Isolation Forest,0.32450331125827814,0.47198922532442,50,150,49,0.9838373005374919
+iforest_n100_c0.01,Isolation Forest,lof_k15_c0.01_euclidean,Local Outlier Factor,0.05263157894736842,0.08923599257884972,50,50,5,0.13872533652029576
+iforest_n100_c0.01,Isolation Forest,lof_k15_c0.03_euclidean,Local Outlier Factor,0.030927835051546393,0.04389123336673728,50,150,6,0.13872533652029576
+iforest_n100_c0.01,Isolation Forest,lof_k25_c0.03_euclidean,Local Outlier Factor,0.03626943005181347,0.0536694455367676,50,150,7,0.15401958254610562
+iforest_n100_c0.03,Isolation Forest,iforest_n200_c0.03,Isolation Forest,0.6304347826086957,0.7552539621088036,150,150,116,0.9838373005374919
+iforest_n100_c0.03,Isolation Forest,lof_k15_c0.01_euclidean,Local Outlier Factor,0.07526881720430108,0.12235367084004584,150,50,14,0.13872533652029576
+iforest_n100_c0.03,Isolation Forest,lof_k15_c0.03_euclidean,Local Outlier Factor,0.06761565836298933,0.09410046451605368,150,150,19,0.13872533652029576
+iforest_n100_c0.03,Isolation Forest,lof_k25_c0.03_euclidean,Local Outlier Factor,0.08303249097472924,0.12027863430528427,150,150,23,0.15401958254610562
+iforest_n200_c0.03,Isolation Forest,lof_k15_c0.01_euclidean,Local Outlier Factor,0.0582010582010582,0.09286684425726958,150,50,11,0.1535170747165803
+iforest_n200_c0.03,Isolation Forest,lof_k15_c0.03_euclidean,Local Outlier Factor,0.06007067137809187,0.08104640839457296,150,150,17,0.1535170747165803
+iforest_n200_c0.03,Isolation Forest,lof_k25_c0.03_euclidean,Local Outlier Factor,0.06761565836298933,0.09410046451605368,150,150,19,0.16677992687125687
+lof_k15_c0.01_euclidean,Local Outlier Factor,lof_k15_c0.03_euclidean,Local Outlier Factor,0.3333333333333333,0.4821310026680874,50,150,50,1.0
+lof_k15_c0.01_euclidean,Local Outlier Factor,lof_k25_c0.03_euclidean,Local Outlier Factor,0.32450331125827814,0.47198922532442,50,150,49,0.8900044464597816
+lof_k15_c0.03_euclidean,Local Outlier Factor,lof_k25_c0.03_euclidean,Local Outlier Factor,0.6216216216216216,0.7481577164846266,150,150,115,0.8900044464597816

@@ -35,3 +35,6 @@ venv/
 Thumbs.db
 .vscode/
 .idea/
+
+# The deployable fitted transformer/model is intentionally tracked; raw data is not.
+!artifacts/models/incident_review_engine.joblib

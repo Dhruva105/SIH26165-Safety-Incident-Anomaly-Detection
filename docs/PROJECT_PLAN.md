@@ -10,10 +10,11 @@
 2. Exploratory data analysis.
 3. Structured and text feature engineering.
 4. Isolation Forest and LOF parameter experiments.
-5. PCA visualization and agreement analysis.
-6. Blinded manual review worksheet.
-7. Streamlit project showcase.
-8. Tests, repository documentation and research paper extension.
+5. K-Means recurring-pattern grouping with internal-index and seed-stability checks.
+6. PCA visualization and model-agreement analysis.
+7. Incident intake, anomaly screening, cluster context, similar-case retrieval and human follow-up workflow.
+8. Blinded manual review worksheet.
+9. Tests, repository documentation and research paper extension.
 
 ## Research constraints
 The data contain reported severe injuries, not a verified set of normal and anomalous examples. Model agreement measures do not establish accuracy. Results must report sample size, representation, parameters and compute constraints.

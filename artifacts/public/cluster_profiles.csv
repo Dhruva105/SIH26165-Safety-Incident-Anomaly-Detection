@@ -1,0 +1,9 @@
+cluster_id,records,most_common_event,most_common_source,most_common_injury,most_common_body_part
+1,251,Other fall to lower level less than 6 feet,Other constructed surface,Fractures,Hip joint(s)
+2,2108,Struck against moving part of machinery or equipment,Nonclassifiable,Fractures,Fingertip(s)
+3,923,"Fall onto or against object on same level, n.e.c.","Bodily motion or position of injured, ill worker",Fractures,BODY SYSTEMS
+4,250,"Caught in running equipment or machinery during maintenance, cleaning","Machinery, unspecified",Amputations,"Finger(s), fingernail(s), n.e.c."
+5,330,Caught in running equipment or machinery during regular operation,"Metal, woodworking, and special material machinery, unspecified",Amputations,"Finger(s), fingernail(s), n.e.c."
+6,808,"Other fall to lower level, unspecified","Floor, n.e.c.",Fractures,Hip(s)
+7,230,Compressed or pinched by shifting objects or equipment,"Forklift, order picker, platform truck-powered",Amputations,Fingertip(s)
+8,100,Exposure to environmental heat,Heat-environmental,"Effects of heat and light, n.e.c.",BODY SYSTEMS

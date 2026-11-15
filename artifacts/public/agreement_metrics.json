@@ -1,8 +1,8 @@
 {
-  "jaccard_anomaly_sets": 0.08695652173913043,
-  "adjusted_rand_index": 0.12683777207473132,
+  "jaccard_anomaly_sets": 0.06761565836298933,
+  "adjusted_rand_index": 0.09410046451605368,
   "anomalies_a": 150,
   "anomalies_b": 150,
-  "intersection": 24,
-  "spearman_score_correlation": 0.13435909840493626
+  "intersection": 19,
+  "spearman_score_correlation": 0.13872533652029576
 }

@@ -1,5 +1,3 @@
-# Install exact resolved versions for your own environment with:
-# python -m pip freeze > requirements-lock.txt
-# This file intentionally lists compatible ranges rather than pretending to be
-# a cross-platform lock generated from a particular machine.
+# Runtime dependency pins used to build artifacts/models/incident_review_engine.joblib.
+# For a full environment lock, run `python -m pip freeze` in the target environment.
 -r requirements.txt
