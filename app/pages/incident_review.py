@@ -15,10 +15,41 @@ from safety_anomaly.operational_review import IncidentReviewEngine, build_review
 ROOT = Path(__file__).resolve().parents[2]
 MODEL_PATH = ROOT / "artifacts" / "models" / "incident_review_engine.joblib"
 
-st.markdown('<div class="eyebrow">WORKSPACE / INCIDENT INTAKE</div>', unsafe_allow_html=True)
-st.title("Incident review")
 st.markdown(
-    '<div class="page-deck">Turn a factual incident report into a structured review: compare its pattern with historical severe-injury reports, inspect nearby cases and record the questions that still need evidence.</div>',
+    """
+    <section class="worksite-hero">
+      <div class="worksite-hero-copy">
+        <div class="hero-kicker"><span class="hero-kicker-dot"></span> SIH26165 &nbsp; / &nbsp; FIELD REVIEW WORKSPACE</div>
+        <h1 class="worksite-hero-title">Incident <em>review.</em></h1>
+        <p class="worksite-hero-deck">Move from a factual report to a structured review. Screen unusual patterns, compare historical cases and make the next investigation step clear.</p>
+        <div class="hero-tags">
+          <span>ISOLATION FOREST</span>
+          <span>K-MEANS GROUPING</span>
+          <span>HISTORICAL CONTEXT</span>
+        </div>
+      </div>
+      <div class="worksite-hero-art" aria-hidden="true">
+        <div class="hero-orbit hero-orbit-outer"></div>
+        <div class="hero-orbit hero-orbit-middle"></div>
+        <div class="hero-orbit hero-orbit-inner"></div>
+        <div class="hero-core"><span>W</span></div>
+        <div class="hero-signal hero-signal-one"><b>01</b><small>REPORT</small></div>
+        <div class="hero-signal hero-signal-two"><b>02</b><small>SCREEN</small></div>
+        <div class="hero-signal hero-signal-three"><b>03</b><small>REVIEW</small></div>
+        <div class="hero-art-caption">PATTERN → EVIDENCE → ACTION</div>
+      </div>
+      <div class="hero-bottom-line"><span>WORKSITE / INCIDENT INTELLIGENCE</span><span>RESEARCH PROTOTYPE · HUMAN REVIEW REQUIRED</span></div>
+    </section>
+    <section class="workflow-strip">
+      <div class="workflow-step"><span class="workflow-number">01</span><div><strong>Capture</strong><small>Record the event</small></div></div>
+      <div class="workflow-connector"></div>
+      <div class="workflow-step"><span class="workflow-number">02</span><div><strong>Screen</strong><small>Find unusual patterns</small></div></div>
+      <div class="workflow-connector"></div>
+      <div class="workflow-step"><span class="workflow-number">03</span><div><strong>Compare</strong><small>Review similar cases</small></div></div>
+      <div class="workflow-connector"></div>
+      <div class="workflow-step"><span class="workflow-number">04</span><div><strong>Follow up</strong><small>Record human review</small></div></div>
+    </section>
+    """,
     unsafe_allow_html=True,
 )
 st.markdown(
