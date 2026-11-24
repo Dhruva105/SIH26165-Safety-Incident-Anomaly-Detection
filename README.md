@@ -1,256 +1,424 @@
 # Safety-Incident Anomaly Pattern Detection Using Isolation Forest and LOF
 
-**Application name:** Worksite | Incident Review  
-**Course:** INT396 – Unsupervised Learning  
-**Project type:** Individual  
-**Student:** Dhruv Pal  
-**Roll No.:** RK3P24RDA26  |  **Registration ID:** 12408224  |  **Section:** K3P24RD  
-**Project mapping:** SIH  |  **Mapped ID:** SIH26165  
-**Course outcomes:** CO2, CO4, CO5  
-**Mapped units:** Unit V & IV – Anomaly Detection (Isolation Forest / LOF) and PCA Visualisation  
-**Institution:** Lovely Professional University  
-**Methods:** One-hot encoding, TF-IDF, TruncatedSVD, StandardScaler, Isolation Forest, Local Outlier Factor, K-Means and PCA
+**Application:** Worksite | Incident Intelligence  
+**Course:** INT396, Unsupervised Learning  
+**Project mapping:** SIH / SIH26165  
+**Project type:** Individual
 
-## Course mapping and objectives
+<p align="center">
+  <a href="https://sih26165-safety-incident-anomaly-detection-kmsgsezehgz7hrnwtbq.streamlit.app/"><strong>Open the live Worksite application</strong></a>
+  &nbsp; · &nbsp;
+  <a href="https://github.com/Dhruva105/SIH26165-Safety-Incident-Anomaly-Detection"><strong>GitHub repository</strong></a>
+  &nbsp; · &nbsp;
+  <a href="https://www.osha.gov/severeinjury"><strong>OSHA data source</strong></a>
+</p>
 
-The official title, SIH mapping, course outcomes and three objectives are mapped to implementation evidence in [`docs/COURSE_ALIGNMENT.md`](docs/COURSE_ALIGNMENT.md). The project keeps outcome fields outside feature construction and uses them only in a clearly labelled post-hoc descriptive check. The three official objectives and their code/artifact evidence are mapped in the course-alignment document.
+---
 
-## 1. What the project does
+## Student and course details
 
-Worksite is an incident review prototype built around a real workplace-safety workflow. It helps a safety reviewer move from an incident description to structured evidence collection:
+| Field | Details |
+|---|---|
+| Student | Dhruv Pal |
+| Roll number | RK3P24RDA26 |
+| Registration ID | 12408224 |
+| Section | K3P24RD |
+| Project type | Individual |
+| Project title | Safety-Incident Anomaly Pattern Detection Using Isolation Forest and LOF |
+| Project mapping | SIH |
+| Mapped ID | SIH26165 |
+| Course outcomes | CO2, CO4, CO5 |
+| Mapped units | Unit V & IV: Anomaly Detection (Isolation Forest / LOF) and PCA Visualisation |
 
-1. Capture an incident using structured fields and a factual narrative.
-2. Represent the incident using the same fitted structured-text feature pipeline used for the historical reference sample.
-3. Assign it to one of eight exploratory K-Means pattern groups and show the group's most frequent event/source/injury descriptors.
-4. Screen for unusual patterns using Isolation Forest.
-5. Retrieve nearby historical reports using nearest-neighbour search.
-6. Complete a rule-based human-review checklist, record follow-up ownership and export a case file.
+## 1. Project overview
 
-This is a decision-support prototype. It is not an accident predictor, a calibrated safety-risk score, a compliance tool or an emergency response service. A high anomaly percentile does not mean a high probability of injury. A low percentile does not establish that a task is safe.
+Worksite is a research prototype for reviewing reported workplace severe-injury incidents. It combines structured incident fields with the text of an incident narrative, screens a new report for unusual patterns, places it in an exploratory pattern group, retrieves similar historical reports and gives a reviewer a structured set of follow-up questions.
 
-The research workflow remains available in the project pages and notebooks. It compares Isolation Forest and Local Outlier Factor, visualises lower-dimensional patterns with PCA and reports agreement measures. It also includes an explicit K-Means cluster-count and seed-stability evaluation.
+The project has two connected parts:
 
-## 2. Dataset and scope
+1. **Research pipeline:** data preparation, feature construction, Isolation Forest and Local Outlier Factor (LOF) experiments, parameter comparisons, PCA visualisation and unsupervised evaluation.
+2. **Operational demonstration:** a Streamlit application for incident intake, Isolation Forest screening, K-Means grouping, historical-neighbour retrieval, human review and JSON export.
 
-The supplied local extract is the OSHA Severe Injury Reports dataset, named `January2015toNovember2025.csv`.
+The methods are established machine-learning techniques. The project contribution is their documented comparison on this selected OSHA report sample and their connection to a reviewer-facing workflow. The project does not claim a new anomaly-detection algorithm.
 
-Audit of the supplied file:
+### Live application
 
-- 105,996 rows and 28 columns.
-- 105,996 unique, non-null UPA values.
+**[Launch Worksite | Incident Intelligence](https://sih26165-safety-incident-anomaly-detection-kmsgsezehgz7hrnwtbq.streamlit.app/)**
+
+The deployed app uses the GitHub main branch and the Streamlit entry point at app/streamlit_app.py.
+
+## 2. Problem statement and objectives
+
+Workplace incident reports contain both structured fields (such as event category and equipment source) and unstructured narrative descriptions. Reviewing a large collection manually can make it difficult to locate less common combinations, compare detection methods and organise follow-up investigation.
+
+The project examines whether unsupervised methods can help surface unusual report patterns and provide useful context for human review.
+
+### Official Objective 1: Data preparation
+
+Prepare the selected open industrial safety-incident report data, identify relevant features, handle missing values, encode categorical variables and scale numerical features before applying unsupervised methods.
+
+**Implementation evidence:** data audit, feature-building pipeline, missingness outputs, One-Hot Encoding, TF-IDF, TruncatedSVD and StandardScaler.
+
+### Official Objective 2: Apply and compare anomaly detectors
+
+Apply Isolation Forest and LOF to the prepared features, compare records flagged by each method across multiple parameter settings, and use PCA visualisation plus available labels or manual review to assess consistency.
+
+**Implementation evidence:** six configured IF/LOF runs, pairwise agreement outputs, PCA plots and experiment summary files.
+
+### Official Objective 3: Evaluate and interpret
+
+Evaluate detection consistency, examine false-positive implications, and document limitations, possible bias and ethical considerations.
+
+**Implementation evidence:** Jaccard, Adjusted Rand and score-correlation measures; descriptive checks against held-out injury-outcome fields; clustering diagnostics; model card and ethics documentation.
+
+## 3. Dataset and coverage
+
+The research pipeline uses the OSHA Severe Injury Reports extract:
+
+**File name:** January2015toNovember2025.csv  
+**Inspected extract:** 105,996 rows and 28 columns  
+**Event-date range:** 1 January 2015 to 30 November 2025
+
+The local data audit recorded:
+
+- 105,996 non-null, unique UPA values.
 - No exact duplicate rows.
-- Five repeated distinct `ID` values affecting ten rows.
-- No invalid event dates; event date range 2015-01-01 to 2025-11-30.
+- Five repeated distinct ID values affecting ten rows.
+- No invalid event dates in the inspected extract.
 - No empty narratives in the inspected extract.
 
-OSHA states that severe-injury reporting covers amputations, inpatient hospitalizations and loss of an eye. The requirement began on 1 January 2015. OSHA says the public Severe Injury Reports dataset is limited to federal OSHA jurisdiction and excludes incidents under OSHA-approved State Plans. It is not a census of all workplace injuries, near misses or unsafe acts. Review the official source for current data and scope notes: https://www.osha.gov/severeinjury
+### What the OSHA data represent
 
-The raw CSV is deliberately excluded from this ZIP's Git-ready source package. It contains establishment/location information and free-text narratives. Download it from the official OSHA source and keep it local if you need to rerun the complete research pipeline. The included fitted model allows the website to run without the raw CSV.
+The OSHA Severe Injury Reports data concern reports of work-related amputations, inpatient hospitalisations and loss of an eye under federal OSHA reporting requirements. The reporting requirement began on 1 January 2015. The public dataset does not include incidents under OSHA-approved State Plans.
 
-## 3. Main application workflow
+It is therefore not a census of all workplace injuries, near misses, unsafe acts or workplace hazards. Results from this project must be interpreted within that reporting scope.
 
-### Incident intake
+**Official source and coverage notes:** [OSHA Severe Injury Reports](https://www.osha.gov/severeinjury)
 
-The reviewer provides the event date, industry code (optional), event category, source/equipment, optional injury descriptors and a factual narrative. The interface warns users not to enter names, medical identifiers, exact addresses or confidential information.
+### Data handling and privacy
 
-### Pattern group
+The raw CSV is not included in this repository. It can contain establishment, location and narrative information. Keep the source data in a controlled local environment and do not upload identifiable or confidential incident records to the public repository or the demonstration website.
 
-The incident is transformed into the fitted 24-dimensional structured-text representation and assigned to a K-Means group (k=8). The app shows the group's most frequent event, source and injury categories. Cluster IDs are statistical groups, not hazard classes or causal explanations.
+The modelling workflow excludes direct identifiers, employer and address fields, detailed location fields, inspection identifiers and injury-outcome fields from the primary feature representation. Held-out outcome indicators are used only for a post-hoc descriptive comparison, not as model inputs or verified anomaly labels.
 
-### Anomaly screen
+## 4. Methodology
 
-Isolation Forest (250 trees, `random_state=42`, contamination parameter 0.03) returns an anomaly score and relative percentile against the model's 5,000-record fitted reference sample. The contamination value is a model setting, not an estimate of real-world unsafe incidents.
+The research representation combines categorical, date-derived and narrative features.
 
-### Similar historical records
+| Stage | Method | Purpose |
+|---|---|---|
+| Data validation | Type checks, date parsing and missing-value handling | Prepare consistent records |
+| Categorical representation | One-Hot Encoding | Represent event, industry and source categories numerically |
+| Narrative representation | TF-IDF with unigrams and bigrams | Convert incident text into weighted numerical features |
+| Dimensionality reduction | TruncatedSVD | Reduce the sparse feature representation |
+| Scaling | StandardScaler | Standardise the reduced numerical representation |
+| Anomaly detection | Isolation Forest and LOF | Identify unusual observations using different principles |
+| Pattern grouping | K-Means | Group reports with similar feature representations |
+| Visualisation | PCA | Project high-dimensional records into a lower-dimensional view |
 
-The app retrieves five nearest records in the same fitted feature space. It displays only non-identifying fields retained in the model bundle. Similarity does not prove that two incidents share a cause or circumstances.
+The principal structured-text experiment uses a 5,000-record deterministic sample with random state 42 and a 24-dimensional representation after TruncatedSVD. The TF-IDF stage is configured for up to 2,500 features, unigrams and bigrams, with a minimum document frequency of three. Categorical levels with frequency below 15 are grouped through the configured encoder behaviour.
 
-### Human review and export
+### 4.1 Isolation Forest
 
-Rule-based prompts help the reviewer check immediate response, event sequence, existing controls, contributing conditions and corrective actions. Hazard-specific prompts can be added for fall, caught-in, electrical, struck-by, fire/heat and chemical/exposure language. The reviewer can record an owner role/team, due date and notes, then export JSON.
+Isolation Forest identifies observations that can be separated from the sample using relatively few random partitioning steps. The research experiments vary the number of trees and contamination settings. The deployed incident-review model uses 250 trees, random state 42 and a contamination parameter of 0.03.
 
-Cases are held in Streamlit session state and can be exported. The app is not a secure multi-user records system and session records may be lost when a session ends or an app restarts. Do not use it to process confidential or identifiable incident records.
+The contamination parameter controls the model's expected flagged fraction during fitting. It is not an estimate of the real-world proportion of unsafe workplaces or incidents.
 
-## 4. Architecture
+### 4.2 Local Outlier Factor
 
-```text
-app/                         Streamlit frontend and page navigation
-  pages/incident_review.py   Incident intake, screening, review and exports
-  pages/                     Dataset, methodology, results, ethics and references
-  theme.css                  Worksite visual design system
-src/safety_anomaly/          Reusable backend and research package
-  features/build.py          One-hot, date features, TF-IDF, TruncatedSVD and scaling
-  operational_review.py      K-Means, Isolation Forest, nearest neighbours and review prompts
-  models/                    Isolation Forest and LOF experiment functions
-  evaluation/                 Agreement metrics and blinded-review utilities
-  pipeline.py                Reproducible research pipeline
-artifacts/models/            Fitted operational model (required for deployment)
-artifacts/public/            Aggregate summaries, plots and evaluation outputs
-docs/                        User guide, methodology, model card and validation notes
-notebooks/                   Five ordered research notebooks
-scripts/                     Model build, audit, pipeline and clustering evaluation scripts
-tests/                       Automated tests
-```
+LOF compares the local density around an observation with the local density around its neighbours. The experiment varies neighbour counts and contamination settings. LOF is used in the research comparison; the deployed incident-review workflow uses Isolation Forest for its operational screen.
 
-The frontend and backend are separate: Streamlit handles user interaction in `app/`; all model transformations and inference live in reusable Python modules in `src/safety_anomaly/`.
+### 4.3 K-Means and PCA
 
-## 5. Setup on Windows
+K-Means is used to provide exploratory pattern groups. The experiment evaluates k values of 4, 6, 8 and 10, including comparisons across random seeds 13, 42 and 77. The deployed application uses k=8 as a documented exploratory choice, not as a proven optimal number of hazard classes.
 
-Recommended environment: **Python 3.13** to match the environment used to build the included model artifact.
+PCA is used to visualise the reduced feature space. A two- or three-dimensional projection cannot preserve all information in the original representation and does not establish that an observation is truly anomalous.
 
-Open PowerShell in the extracted project root (the folder containing `README.md`):
+## 5. Experimental design and reported results
 
-```powershell
+The IF/LOF experiment compares six configurations on the same deterministic 5,000-record feature matrix:
+
+| Configuration | Parameters |
+|---|---|
+| IF-01 | Isolation Forest, 100 trees, contamination 0.01 |
+| IF-02 | Isolation Forest, 100 trees, contamination 0.03 |
+| IF-03 | Isolation Forest, 200 trees, contamination 0.03 |
+| LOF-01 | LOF, 15 neighbours, contamination 0.01 |
+| LOF-02 | LOF, 15 neighbours, contamination 0.03 |
+| LOF-03 | LOF, 25 neighbours, contamination 0.03 |
+
+### Selected IF/LOF comparison
+
+For the selected 3% configurations in the checked-in experiment outputs:
+
+| Measure | Result |
+|---|---:|
+| Sample size | 5,000 |
+| Isolation Forest flagged records | 150 |
+| LOF flagged records | 150 |
+| Shared flagged records | 19 |
+| Jaccard similarity | 0.0676 |
+| Adjusted Rand Index | 0.0941 |
+| Spearman score correlation | 0.1387 |
+
+The selected detectors show low overlap. This is evidence of disagreement between the two unsupervised methods under these settings. It is not evidence that either method is accurate or inaccurate because the dataset does not contain independently adjudicated anomaly labels.
+
+Across the six configurations, the checked-in pairwise summary reports mean Jaccard values of 0.4294 for within-Isolation-Forest comparisons, 0.4265 for within-LOF comparisons and 0.0591 for cross-method comparisons. These values show that parameter choices and detector family affect which records are flagged.
+
+### K-Means cluster-count evaluation
+
+| k | Silhouette | Mean pairwise ARI across seeds |
+|---:|---:|---:|
+| 4 | 0.0679 | 0.6777 |
+| 6 | 0.1062 | 0.5861 |
+| 8 | 0.1367 | 0.5291 |
+| 10 | 0.1547 | 0.5027 |
+
+For k=8, the checked-in output also reports a Davies-Bouldin index of 2.2188 and a Calinski-Harabasz index of 277.90. The silhouette value is computed on a 2,000-row evaluation sample. K=8 is retained as an exploratory compromise between cluster separation and stability. K=10 has a higher silhouette value, while k=8 has somewhat higher cross-seed ARI. These internal measures do not validate the clusters against known hazard categories.
+
+### Available result files
+
+The aggregate outputs and figures are stored under artifacts/public/:
+
+- experiment_summary.csv
+- agreement_metrics.json
+- parameter_agreement.csv
+- outcome_proxy_comparison.csv
+- cluster_evaluation.csv
+- cluster_profiles.csv
+- pca_iforest.png
+- pca_lof.png
+
+The application reads these public aggregate outputs for its research evidence pages.
+
+## 6. Worksite application
+
+The application connects the research representation to a guided incident-review workflow.
+
+### Incident intake and screening
+
+A reviewer can enter the event date, optional industry NAICS code, event category, source/equipment, optional injury descriptors and a factual narrative. The interface warns users not to enter names, medical identifiers, exact addresses or confidential information.
+
+The fitted engine transforms the submitted incident using the saved feature pipeline. It then returns an Isolation Forest score, a relative percentile against the fitted reference sample, a K-Means pattern group and five nearest historical records.
+
+### Review and case record
+
+The application also provides rule-based prompts about the event sequence, immediate response, existing controls, contributing conditions and corrective actions. The reviewer can add notes, an owner role/team and a due date, then export the record as JSON.
+
+The checklist is a set of review prompts. It is not a recommendation engine and does not decide whether a workplace is safe.
+
+### Important interpretation limits
+
+- An anomaly percentile is a relative position against the fitted reference sample, not an injury probability.
+- A flagged record requires human assessment.
+- A non-flagged record is not evidence that an activity is safe.
+- Similar historical reports do not prove a common cause.
+- K-Means group IDs are statistical groupings, not validated hazard classes.
+
+### Storage and security
+
+The current case register uses Streamlit session state. It is not a persistent, secure multi-user case-management system. Records may be lost when a session ends or the app restarts. Do not enter names, personal details, medical identifiers, precise addresses or confidential workplace information.
+
+## 7. Technology stack
+
+| Layer | Tools |
+|---|---|
+| User interface | Python, Streamlit, custom CSS |
+| Data processing | pandas, NumPy, SciPy |
+| Text representation | scikit-learn TF-IDF |
+| Dimensionality reduction | TruncatedSVD and PCA |
+| Anomaly detection | Isolation Forest and Local Outlier Factor |
+| Clustering | K-Means |
+| Similar-case retrieval | NearestNeighbors |
+| Visualisation | Plotly, Matplotlib and Seaborn |
+| Model persistence | joblib |
+| Testing | pytest |
+| Version control | Git and GitHub |
+| Deployment | Streamlit Community Cloud |
+
+## 8. Repository structure
+
+~~~text
+SIH26165-Safety-Incident-Anomaly-Detection/
+├── app/
+│   ├── streamlit_app.py
+│   ├── theme.css
+│   ├── utils.py
+│   └── pages/
+│       ├── incident_review.py
+│       ├── overview.py
+│       ├── dataset.py
+│       ├── methodology.py
+│       ├── results.py
+│       ├── explorer.py
+│       ├── ethics.py
+│       └── references.py
+├── artifacts/
+│   ├── models/
+│   │   └── incident_review_engine.joblib
+│   └── public/
+├── configs/
+│   └── default.yaml
+├── data/
+│   └── raw/                 # local source data; not committed
+├── docs/
+├── notebooks/
+├── reports/
+├── scripts/
+├── src/
+│   └── safety_anomaly/
+├── tests/
+├── pyproject.toml
+├── requirements.txt
+└── README.md
+~~~
+
+The fitted model at artifacts/models/incident_review_engine.joblib is required for the deployed incident-review workflow. The original raw OSHA CSV is not required to run the already-fitted web application.
+
+## 9. Run locally on Windows
+
+Python 3.13 is recommended to match the model build environment and the repository's .python-version file.
+
+Open PowerShell in the project root, the directory containing README.md:
+
+1. Create a virtual environment:
+
+~~~powershell
 py -3.13 -m venv .venv
+~~~
+
+2. Activate it:
+
+~~~powershell
 .venv\Scripts\Activate.ps1
+~~~
+
+3. Install dependencies:
+
+~~~powershell
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 pip install -e . --no-deps
-```
+~~~
 
-If `py -3.13` is unavailable, install Python 3.13 from https://www.python.org/downloads/ and reopen PowerShell. The included model was built with scikit-learn 1.8.0; keep the pinned version in `requirements.txt` when deploying.
+4. Start the website:
 
-## 6. Run the website
-
-```powershell
+~~~powershell
 streamlit run app/streamlit_app.py
-```
+~~~
 
-Open the local URL printed in the terminal, normally http://localhost:8501.
+5. Open the local address printed in the terminal, usually:
 
-### Quick functional test
+~~~text
+http://localhost:8501
+~~~
 
-Try these fictional test narratives. They are only for checking the interface and are not part of the research dataset or experimental evidence.
+If PowerShell blocks environment activation, run:
 
-**Scenario A – Conveyor cleaning:**
+~~~powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.venv\Scripts\Activate.ps1
+~~~
 
-> During a planned cleaning task, material was removed from a conveyor transfer point. The belt was not fully isolated before the task began. While clearing residual material near the moving belt, a hand contacted a moving component. Work was stopped and the area was isolated for review.
+## 10. Test the application
 
-**Scenario B – Ladder access:**
+Run the automated tests:
 
-> A worker was accessing an elevated storage platform using a portable ladder. The ladder shifted while the worker was descending, causing a fall to the floor. The immediate work area was cleared and the ladder was taken out of use pending inspection.
-
-**Scenario C – Forklift movement:**
-
-> A powered forklift was reversing from a storage aisle while a pedestrian was moving through the same area. The vehicle and pedestrian paths crossed near the aisle end. The operation was stopped and the traffic route was reviewed.
-
-**Scenario D – Heat exposure:**
-
-> Outdoor maintenance continued during a period of high ambient temperature. The task involved sustained physical work and limited shaded recovery time. A worker reported heat-related symptoms and the task was stopped while the response and work-rest arrangements were reviewed.
-
-For each scenario, verify that the app produces a pattern group, anomaly screen, historical matches, review checklist, action record and JSON download. Do not use the synthetic results as a paper result.
-
-## 7. Run tests
-
-```powershell
+~~~powershell
 pytest -q
+~~~
+
+Compile-check the Python source:
+
+~~~powershell
 python -m compileall -q src app scripts tests
-```
+~~~
 
-## 8. Reproduce the analysis (raw CSV required)
+For a manual smoke test, submit a fictional conveyor-cleaning incident. Check that the app returns a pattern group, anomaly screening result, five similar reports, review prompts and a downloadable JSON record. Synthetic test incidents are for interface testing only; do not report their outputs as research findings.
 
-Download the source extract and place it at:
+## 11. Reproduce the research pipeline
 
-`data/raw/January2015toNovember2025.csv`
+The full analysis requires the raw OSHA extract downloaded from the official OSHA source. Place the file locally at:
+
+~~~text
+data/raw/January2015toNovember2025.csv
+~~~
 
 Run the data audit:
 
-```powershell
+~~~powershell
 python -m safety_anomaly.cli audit
-```
+~~~
 
-Run the IF/LOF research experiment:
+Run the IF/LOF experiment:
 
-```powershell
+~~~powershell
 python -m safety_anomaly.cli run --quick --sample-size 5000
-```
+~~~
 
-Run the K-Means cluster-count and seed-stability evaluation:
+Evaluate K-Means cluster counts and seed stability:
 
-```powershell
+~~~powershell
 python scripts/evaluate_clusters.py --sample-size 5000
-```
+~~~
 
-Rebuild the deployable operational model:
+Rebuild the operational review model:
 
-```powershell
+~~~powershell
 python scripts/build_review_model.py --sample-size 5000
-```
+~~~
 
-Run larger experiment grids only after checking runtime and memory. LOF is bounded by `experiments.lof_max_rows` in `configs/default.yaml`.
+The experiment configuration is in configs/default.yaml. Check available memory and runtime before increasing sample sizes, particularly for LOF.
 
-## 9. GitHub and Streamlit Community Cloud deployment
+## 12. Deploy on Streamlit Community Cloud
 
-### Prepare GitHub
+The current application is deployed from this existing repository. Do not create a second repository just to deploy the project.
 
-1. Create an empty repository on https://github.com/new, for example `worksite-incident-review`.
-2. Do not add a README, license or `.gitignore` on GitHub; this folder already contains them.
-3. In PowerShell, open the project root (the folder containing `README.md`) and initialise Git:
+1. Open [Streamlit Community Cloud](https://share.streamlit.io/) and sign in with GitHub.
+2. Select **Create app** (or open the existing app's settings).
+3. Select repository Dhruva105/SIH26165-Safety-Incident-Anomaly-Detection.
+4. Select branch main.
+5. Set the main file path to app/streamlit_app.py.
+6. Select a Python version compatible with the pinned dependencies and fitted model. Python 3.13 is the recommended local parity version.
+7. Deploy or reboot the existing app if required.
+8. Inspect the deployment logs and test the incident intake, pattern group, anomaly screen, historical matches and JSON export.
 
-```powershell
-git init
-git branch -M main
-git status --short
-```
+**Live deployment:** [https://sih26165-safety-incident-anomaly-detection-kmsgsezehgz7hrnwtbq.streamlit.app/](https://sih26165-safety-incident-anomaly-detection-kmsgsezehgz7hrnwtbq.streamlit.app/)
 
-The raw OSHA CSV is not included in this package and must stay out of the public repository. The fitted model at `artifacts/models/incident_review_engine.joblib` must be included because the deployed application needs it.
+If the app fails to start, inspect **Manage app → Logs** before changing dependencies. Keep scikit-learn and joblib compatible with the fitted model artifact.
 
-4. Stage, commit and push:
+## 13. Limitations, bias and responsible use
 
-```powershell
-git add .
-git status --short
-git commit -m "Build Worksite incident review and pattern screening"
-git remote add origin https://github.com/YOUR_USERNAME/worksite-incident-review.git
-git push -u origin main
-```
+1. **Coverage:** the OSHA extract represents selected severe-injury reports under federal OSHA jurisdiction, not all injuries or near misses.
+2. **Reporting bias:** records reflect reporting practices, regulatory scope and the industries represented in the data.
+3. **No anomaly ground truth:** independently verified labels are unavailable. Agreement scores cannot be interpreted as accuracy.
+4. **Detector disagreement:** the selected IF and LOF configurations share few flagged records. This limits claims about stable anomaly identification.
+5. **Cluster quality:** K-Means groups show modest internal separation and vary across initialisations.
+6. **Feature representation:** TF-IDF and dimensionality reduction can omit context, sequence and meaning from a narrative.
+7. **Human validation:** the operational workflow has not been prospectively validated by workplace safety professionals.
+8. **Application storage:** the case register is session-based and is not suitable for confidential or regulated records.
 
-Replace `YOUR_USERNAME` with your GitHub username. Confirm the raw OSHA CSV is not staged. `artifacts/models/incident_review_engine.joblib` must be committed because the deployed app needs it.
+Worksite is an academic research prototype. It must not be used as an emergency response service, a legal compliance checker, a calibrated safety-risk model or an automated basis for employment or disciplinary decisions. A qualified safety professional must assess the incident and supporting evidence.
 
-### Deploy
+## 14. Research context and selected literature
 
-1. Open https://share.streamlit.io/ and sign in with GitHub.
-2. Select **Create app** and choose the repository you just pushed.
-3. Choose branch `main`.
-4. Set the entrypoint to `app/streamlit_app.py`.
-5. In Advanced settings, choose Python 3.13 (or the same compatible Python version used for the final tested build).
-6. Select **Deploy** and inspect the build logs.
-7. Test the live form, pattern-group output, anomaly screen, historical matches and JSON export.
-8. Copy the deployed `https://...streamlit.app` URL into the PowerPoint's Project Links slide and README.
-
-Official deployment instructions: https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy
-
-## 10. Verified project outputs
-
-- `artifacts/models/incident_review_engine.joblib`: fitted model bundle for 5,000 records, 24-dimensional features, K-Means k=8 and Isolation Forest.
-- `artifacts/public/experiment_summary.csv`: six IF/LOF configurations on the same deterministic 5,000-record experiment sample.
-- `artifacts/public/agreement_metrics.json`: IF/LOF agreement measures for the selected configurations.
-- `artifacts/public/parameter_agreement.csv`: pairwise Jaccard, ARI and score-correlation comparisons across all 15 pairs of the six IF/LOF configurations.
-- `artifacts/public/outcome_proxy_comparison.csv`: descriptive flag-rate comparisons against held-out OSHA injury-outcome indicators. These are not anomaly labels or accuracy measures.
-- `artifacts/public/cluster_evaluation.csv`: internal cluster indices and cross-seed ARI for k=4, 6, 8 and 10.
-- `artifacts/public/cluster_profiles.csv`: aggregate dominant categories for the selected k=8 partition.
-- `artifacts/public/pca_iforest.png` and `pca_lof.png`: descriptive PCA visualisations.
-
-On the 5,000-record experiment sample, the selected IF (100 trees, 3% contamination) and LOF (k=15, 3% contamination) configurations each flag 150 records, with 19 shared flags. Their Jaccard similarity is 0.0676, adjusted Rand index is 0.0941 and Spearman score correlation is 0.1387. These values describe agreement between unsupervised methods; they do not represent anomaly detection accuracy. Across all parameter pairs, mean within-IF Jaccard is 0.4294, within-LOF Jaccard is 0.4265, and cross-method Jaccard is 0.0591.
-
-The selected K-Means k=8 run reports a silhouette value 0.1367 (computed on a 2,000-row evaluation sample), Davies-Bouldin index 2.2188, Calinski-Harabasz index 277.90 and mean pairwise ARI 0.5291 across random seeds 13, 42 and 77. These are internal/initialization-stability diagnostics on one deterministic 5,000-row sample. They do not establish ground-truth hazard groups. See `docs/CLUSTERING_NOTE.md`.
-
-## 11. Research-informed scope and contribution
-
-Prior work has already applied text analytics, clustering and NLP to occupational incident narratives. A review of safety occurrence report NLP describes classification, information extraction, semantic search and topic modelling, while stressing data-quality and real-world validation issues. A 2024 highway-construction safety study also applies LLM-enabled narrative analysis and clustering. Therefore, this project does **not** claim that K-Means, Isolation Forest, LOF or TF-IDF are novel algorithms.
-
-The applied contribution is a single reviewer-facing workflow that combines (a) recurring-pattern context from K-Means, (b) unusual-pattern screening from Isolation Forest, (c) record-level context from nearest neighbours and (d) structured human follow-up prompts and export. A later research paper should evaluate the usefulness and stability of this integrated workflow and compare its components rather than claim algorithmic novelty. Importantly, Song and Suh (2019) already applied text mining with LOF to narrative accident reports, and Smetana et al. (2024) analysed OSHA Severe Injury Reports using NLP and clustering. The work must therefore position itself as an applied, reproducible comparison and reviewer workflow, not as the first text-based anomaly detector or first OSHA narrative clustering study.
+Prior studies have already applied text mining, natural language processing, clustering and anomaly detection to accident and safety reports. This project does not claim that Isolation Forest, LOF, K-Means, TF-IDF or PCA are new algorithms. Its applied focus is a reproducible comparison of unsupervised detector agreement and parameter sensitivity, together with a reviewer-facing workflow that links pattern context, anomaly screening, historical neighbours and structured follow-up.
 
 Selected related work:
 
-- Song, B., & Suh, Y. (2019). Narrative texts-based anomaly detection using accident report documents: The case of chemical process safety. *Journal of Loss Prevention in the Process Industries, 57*, 47–54. https://doi.org/10.1016/j.jlp.2018.08.010
-- Smetana, M., de Salles, L. S., Sukharev, I., & Khazanovich, L. (2024). Highway Construction Safety Analysis Using Large Language Models. *Applied Sciences, 14*(4), 1352. https://doi.org/10.3390/app14041352
-- Ricketts, J., Barry, D., Guo, W., & Pelham, J. (2023). A Scoping Literature Review of Natural Language Processing Application to Safety Occurrence Reports. *Safety, 9*(2), 22. https://doi.org/10.3390/safety9020022
-- Shayboun, M., Kifokeris, D., & Koch, C. (2025). A review of machine learning for analysing accident reports in the construction industry. *Journal of Information Technology in Construction, 30*, 439–460. https://doi.org/10.36680/j.itcon.2025.019
-- Macêdo, J. B., Ramos, P. M. S., Maior, C. B. S., Moura, M. J. C., Lins, I. D., & Vilela, R. F. T. (2023). Identifying low-quality patterns in accident reports from textual data. *International Journal of Occupational Safety and Ergonomics, 29*(3), 1088–1100. https://doi.org/10.1080/10803548.2022.2111847
+1. B. Song and Y. Suh, "Narrative texts-based anomaly detection using accident report documents: The case of chemical process safety," *Journal of Loss Prevention in the Process Industries*, vol. 57, pp. 47–54, 2019. [https://doi.org/10.1016/j.jlp.2018.08.010](https://doi.org/10.1016/j.jlp.2018.08.010)
+2. J. Ricketts, D. Barry, W. Guo, and J. Pelham, "A Scoping Literature Review of Natural Language Processing Application to Safety Occurrence Reports," *Safety*, vol. 9, no. 2, art. 22, 2023. [https://doi.org/10.3390/safety9020022](https://doi.org/10.3390/safety9020022)
+3. M. Smetana, L. S. de Salles, I. Sukharev, and L. Khazanovich, "Highway Construction Safety Analysis Using Large Language Models," *Applied Sciences*, vol. 14, no. 4, art. 1352, 2024. [https://doi.org/10.3390/app14041352](https://doi.org/10.3390/app14041352)
+4. M. Shayboun, D. Kifokeris, and C. Koch, "A review of machine learning for analysing accident reports in the construction industry," *Journal of Information Technology in Construction*, vol. 30, pp. 439–460, 2025. [https://doi.org/10.36680/j.itcon.2025.019](https://doi.org/10.36680/j.itcon.2025.019)
+5. J. B. Macêdo et al., "Identifying low-quality patterns in accident reports from textual data," *International Journal of Occupational Safety and Ergonomics*, vol. 29, no. 3, pp. 1088–1100, 2023. [https://doi.org/10.1080/10803548.2022.2111847](https://doi.org/10.1080/10803548.2022.2111847)
 
-## 12. Limitations and next research stage
+## 15. Citation and licence
 
-The dataset contains reports of selected severe injuries under federal OSHA jurisdiction; it is subject to reporting and selection bias. There are no independently adjudicated anomaly labels. Cluster boundaries have moderate/low internal separation and vary with K-Means initialization. The operational screen has not been prospectively validated with safety professionals. The current case register is session-only. Before organisational use, add authenticated access, persistent secured storage, role-based permissions, audit logging, retention controls and a formal safety/privacy review.
+The repository includes a CITATION.cff file and an MIT licence. Cite the OSHA dataset and relevant methods papers when reusing the data, code or analysis. Check the source terms and licence before redistributing the raw dataset or derived records.
 
-The subsequent IEEE-format research paper should be drafted from the verified implementation, reproducible experiments, actual reviewer assessment (if conducted) and checked references. Do not invent precision/recall, predictive accuracy, reviewer agreement or deployment outcomes.
+---
+
+**Project:** SIH26165  
+**Student:** Dhruv Pal  
+**Application:** [Worksite | Incident Intelligence](https://sih26165-safety-incident-anomaly-detection-kmsgsezehgz7hrnwtbq.streamlit.app/)  
+**Source code:** [GitHub repository](https://github.com/Dhruva105/SIH26165-Safety-Incident-Anomaly-Detection)
